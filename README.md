@@ -1,5 +1,5 @@
 # Tindog - Tinder for Dogs!
-# Created by Jagdeep Sidhu, Rishon Ghosh & Gurtej Gill
+# Created by Rishon Ghosh, Jagdeep Sidhu & Gurtej Gill
 
 <div align="center">
   <h3>Website Snippet</h3>
