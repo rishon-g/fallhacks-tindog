@@ -2,7 +2,7 @@
 # Created by Jagdeep Sidhu, Rishon Ghosh & Gurtej Gill
 
 ## Overview
-Tindog is a Tinder-inspired web app where users can sign up, create a profile for their own dog, and browse other potential partners for their dog! Users can click the button on the left side to like a dog, or click the button on the right to pass. Tindog is built using Python and Flask for the backend and HTML/CSS for the frontend.
+Tindog is a Tinder-inspired web app where users can sign up, create a profile for their own dog, and browse other potential partners for their dog. But there's a twist! Only dogs with similar musical preferences can match (you will be quizzed!). Users can click the button on the left side to like a dog, or click the button on the right to pass. Tindog is built using Python and Flask for the backend and HTML/CSS for the frontend.
 
 ## Features
 - Individual user signup and login
