@@ -22,11 +22,48 @@ Tindog is a Tinder-inspired web app where users can sign up, create a profile fo
 - Simple, clean, user-friendly user interface
 
 ## Tech Stack
-- Backend: Python, Flask 
-- Frontend: HTML, CSS
-- Database: SQLite
+* **Backend:** Python, Flask, Werkzeug
+* **Database:** SQLite (Relational Data Management)
+* **Frontend:** HTML, CSS, JavaScript (Jinja2 Templating)
+* **Storage:** Local File System (Image & Audio Handling)
 
 ## Future Improvements
 - Create swipe animations similar to Tinder
 - Mobile version of web app
 - Additional matching criteria and more specific reasoning
+
+## Installation & Running Instructions
+
+**Prerequisites:** Ensure you have **Python 3.x** installed on your machine.
+
+**1. Clone the repository:**
+```bash
+git clone https://github.com/rishon-g/fallhacks-tindog.git
+```
+2. Set up a Virtual Environment (Recommended):
+It is best practice to run this app in an isolated environment.
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Mac/Linux
+```
+
+3. Install Dependencies:
+Use the included requirements.txt to install all necessary packages automatically.
+
+```bash
+pip install -r requirements.txt
+```
+4. Start the Application:
+Run the Flask server. The database will automatically initialize itself.
+
+```bash
+python3 app.py
+```
+
+5. View the App:
+Open your web browser and navigate to:
+
+```bash
+http://127.0.0.1:5000
+```
