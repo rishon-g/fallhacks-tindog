@@ -1,69 +1,92 @@
-# Tindog - Tinder for Dogs!
-# Created by Rishon Ghosh, Jagdeep Sidhu & Gurtej Gill
-
 <div align="center">
-  <h3>Website Snippet</h3>
-  <img src="images/img.png" alt="App Homepage View" width="355">
-  <img src="images/img_2.png" alt="Match Attention Required View" width="300">
-  <img src="images/img_1.png" alt="Match Verification View" width="600">
-  
+
+<img src="static/uploads/tindog.webp" alt="Tindog logo" width="140">
+
+# Tindog
+
+**Tinder for dogs, with a twist: your dogs only match if you can name their favourite song.**
+
+Built at **FallHacks 2025** by Rishon Ghosh, Jagdeep Sidhu and Gurtej Gill.
+
+![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white) ![Flask](https://img.shields.io/badge/Flask-backend-000000?logo=flask&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-database-003B57?logo=sqlite&logoColor=white) ![Jinja](https://img.shields.io/badge/Jinja2-templates-B41717?logo=jinja&logoColor=white) ![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?logo=bootstrap&logoColor=white) ![License: MIT](https://img.shields.io/badge/license-MIT-green)
+
+<img src="docs/match-flow.gif" alt="Liking Luna the Chihuahua, who already liked back, opens a 'Name that tune' quiz; typing Blinding Lights confirms the match" width="560">
+
+<sub>Luna has already liked Biscuit. Liking her back opens the song quiz, and the right answer confirms the match.</sub>
+
 </div>
 
+## How it works
 
-## Overview
-Tindog is a Tinder-inspired web app where users can sign up, create a profile for their own dog, and browse other potential partners for their dog. But there's a twist! Only dogs with similar musical preferences can match (you will be quizzed!). Users can click the button on the left side to like a dog, or click the button on the right to pass. Tindog is built using Python and Flask for the backend and HTML/CSS for the frontend.
+1. **Create a profile for your dog.** Add a photo, breed, age, personality, a short bio and your dog's **favourite artist**.
+2. **Discover dogs one at a time.** Like or skip each one.
+3. **Pass the vibe check.** If you like a dog that has already liked yours, the match isn't confirmed yet. Tindog plays a short clip by *that dog's* favourite artist, and you have to type the song title.
+4. **It's a match.** Answer correctly and the dog moves to your confirmed matches. Dogs who liked you first wait under "Needs your answer", and the count shows as a badge in the nav bar.
 
-## Features
-- Individual user signup and login
-- Password encryption built in through secure hash plugin 
-- Add information about your dog, including an image
-- Browse dogs one at a time
-- Ability to like or dislike dogs
-- Simple, clean, user-friendly user interface
+## Screenshots
 
-## Tech Stack
-* **Backend:** Python, Flask, Werkzeug
-* **Database:** SQLite (Relational Data Management)
-* **Frontend:** HTML, CSS, JavaScript (Jinja2 Templating)
-* **Storage:** Local File System (Image & Audio Handling)
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/discover.png" alt="Discover page showing Luna the Chihuahua with Skip and Like buttons"></td>
+    <td width="50%"><img src="docs/screenshots/matches.png" alt="Matches page with an It's a match banner and Luna under confirmed matches"></td>
+  </tr>
+  <tr>
+    <td><b>Discover</b>: one dog at a time</td>
+    <td><b>Matches</b>: confirmed matches and likes waiting on you</td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/screenshots/song-quiz.png" alt="Name that tune page with an audio player and a song title input"></td>
+  </tr>
+  <tr>
+    <td colspan="2"><b>Name that tune</b>: the quiz that stands between a mutual like and a match</td>
+  </tr>
+</table>
 
-## Future Improvements
-- Create swipe animations similar to Tinder
-- Mobile version of web app
-- Additional matching criteria and more specific reasoning
+## Under the hood
 
-## Installation & Running Instructions
+- **Matching in SQL.** Likes and skips live in one `likes` table keyed on `(user, target dog)`, with a value of `1` or `-1`. Discover, mutual matches, pending matches and the nav badge are all single SQL queries (self-joins on `likes`), and swipes are upserts (`ON CONFLICT … DO UPDATE`), so changing your mind never creates duplicate rows.
+- **A gated match.** A like that would complete a match is *not* written straight away. `/swipe` detects the mutual like and redirects to the quiz first, and the like is only recorded once the answer is correct. Answers are matched case-insensitively against accepted variants (for example "Can't Stop The Feeling" and "Cant Stop The Feeling").
+- **Secure basics.** Passwords are hashed with Werkzeug, every query is parameterized, protected routes go through a `login_required` decorator, and responses are sent with no-cache headers so pages don't reappear after logout.
+- **Safe uploads.** Photos are checked against an extension allowlist and capped at 10 MB. Filenames go through `secure_filename`, and a numeric suffix is added if a file with that name already exists.
+- **Self-initializing database.** The SQLite schema is created on start-up, and a small migration adds the `favorite_artist` column to databases created before it existed.
 
-**Prerequisites:** Ensure you have **Python 3.x** installed on your machine.
+## My role
 
-**1. Clone the repository:**
+I wrote the application code in this repository: the Flask backend and database schema, the matching queries, the song-quiz match gate and its audio clips, every page template, and the styling. Jagdeep set up the repository and the original README. After the hackathon, I reorganized the project and rewrote the documentation.
+
+## Getting started
+
+Requires **Python 3**.
+
 ```bash
 git clone https://github.com/rishon-g/fallhacks-tindog.git
-```
-2. Set up a Virtual Environment (Recommended):
-It is best practice to run this app in an isolated environment.
-
-```bash
+cd fallhacks-tindog
 python3 -m venv venv
-source venv/bin/activate  # On Mac/Linux
-```
-
-3. Install Dependencies:
-Use the included requirements.txt to install all necessary packages automatically.
-
-```bash
+source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-```
-4. Start the Application:
-Run the Flask server. The database will automatically initialize itself.
-
-```bash
 python3 app.py
 ```
 
-5. View the App:
-Open your web browser and navigate to:
+Then open <http://127.0.0.1:5000>. The repository includes a small demo database (`barkr.db`) with a few dog profiles, so you can register and start swiping straight away.
 
-```bash
-http://127.0.0.1:5000
+## Project structure
+
 ```
+app.py               # routes, matching logic, song quiz, database setup
+templates/           # Jinja2 pages: discover, songgate, matches, register, login, profile
+static/css/          # styles
+static/audio/        # song clips for the quiz
+static/uploads/      # dog photos
+barkr.db             # SQLite demo database
+```
+
+## What I'd build next
+
+- Swipe gestures and card animations
+- A mobile-first layout
+- Real-time match notifications and chat between matched owners
+- Smarter matching: breed, size and energy level, not just music
+
+## License
+
+[MIT](LICENSE)
