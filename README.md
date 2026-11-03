@@ -69,6 +69,15 @@ python3 app.py
 
 Then open <http://127.0.0.1:5000>. The repository includes a small demo database (`barkr.db`) with a few dog profiles, so you can register and start swiping straight away.
 
+## Running the tests
+
+The tests use a temporary database, so `barkr.db` is left untouched:
+
+```bash
+pip install pytest
+PYTHONPATH=. pytest tests
+```
+
 ## Project structure
 
 ```
@@ -78,6 +87,7 @@ static/css/          # styles
 static/audio/        # song clips for the quiz
 static/uploads/      # dog photos
 barkr.db             # SQLite demo database
+tests/               # pytest tests (run against a temporary database)
 ```
 
 ## What I'd build next
