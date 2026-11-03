@@ -248,7 +248,7 @@ def register():
             return render_template("register.html")
 
         dog_age = request.form.get("dog_age")
-        dog_age_val = int(dog_age) if (dog_age and dog_age.isdigit()) else None
+        dog_age_val = int(dog_age) if (dog_age and dog_age.isascii() and dog_age.isdigit()) else None
         dog_gender = (request.form.get("dog_gender") or "").strip()
         dog_breed = (request.form.get("dog_breed") or "").strip()
         dog_personality = (request.form.get("dog_personality") or "").strip()
