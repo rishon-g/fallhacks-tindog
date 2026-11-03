@@ -341,6 +341,9 @@ def swipe():
         flash("Invalid swipe.", "error")
         return redirect(url_for("discover"))
     dog_id = int(dog_id)
+    if dog_id == my_dog_id():
+        flash("You can't swipe on your own dog.", "error")
+        return redirect(url_for("discover"))
 
     db = get_db()
 
