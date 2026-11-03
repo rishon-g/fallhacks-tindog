@@ -337,7 +337,7 @@ def swipe():
     """
     dog_id = request.form.get("dog_id")
     action = request.form.get("action")
-    if not dog_id or action not in {"like", "dislike"}:
+    if not dog_id or not (dog_id.isascii() and dog_id.isdigit()) or action not in {"like", "dislike"}:
         flash("Invalid swipe.", "error")
         return redirect(url_for("discover"))
     dog_id = int(dog_id)
