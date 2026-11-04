@@ -42,3 +42,23 @@ def test_swipe_rejects_own_dog(client):
     register(client, "a")
     client.post("/swipe", data={"dog_id": "1", "action": "like"})
     assert sqlite3.connect(barkr.DB_PATH).execute("SELECT COUNT(*) FROM likes").fetchone() == (0,)
+
+
+def test_login_rejects_wrong_password(client):
+    register(client, "a")
+    resp = client.post("/login", data={"username": "a", "password": "nope"})
+    assert resp.status_code == 200
+    assert b"Invalid username or password." in resp.data
+    with client.session_transaction() as sess:
+        assert "user_id" not in sess
+
+
+def test_logout_clears_session(client):
+    register(client, "a")
+    resp = client.post("/login", data={"username": "a", "password": "pw"})
+    assert resp.status_code == 302
+    with client.session_transaction() as sess:
+        assert "user_id" in sess
+    client.get("/logout")
+    with client.session_transaction() as sess:
+        assert "user_id" not in sess
