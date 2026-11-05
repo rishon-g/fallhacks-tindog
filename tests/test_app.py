@@ -62,3 +62,17 @@ def test_logout_clears_session(client):
     client.get("/logout")
     with client.session_transaction() as sess:
         assert "user_id" not in sess
+
+
+def test_mutual_like_redirects_to_song_gate(client):
+    register(client, "a")
+    register(client, "b")
+    # b (dog 2) likes a's dog (dog 1)
+    client.post("/swipe", data={"dog_id": "1", "action": "like"})
+    # a likes b's dog: mutual, so the like is deferred to the song gate
+    client.post("/login", data={"username": "a", "password": "pw"})
+    resp = client.post("/swipe", data={"dog_id": "2", "action": "like"})
+    assert resp.status_code == 302
+    assert "/songgate/2" in resp.headers["Location"]
+    assert sqlite3.connect(barkr.DB_PATH).execute(
+        "SELECT COUNT(*) FROM likes WHERE user_id = 1").fetchone() == (0,)
